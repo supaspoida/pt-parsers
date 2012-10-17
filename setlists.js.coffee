@@ -1,16 +1,20 @@
-jsdom = require("jsdom")
-fs    = require("fs")
+jsdom   = require("jsdom")
+request = require("request")
+fs      = require("fs")
 
 getPage = (pageNum) ->
   url = "http://phantasytour.com/shows?band_id=4&page=#{pageNum}&tour_id=-1"
-  jsdom.env url, ["http://code.jquery.com/jquery-1.8.0.min.js"], (errors, window) ->
-    $ = window.$
+  request url, (error, response, body) =>
+    segueRegExp = new RegExp(' > ', 'g')
+    segueElement = '<span class="segue"/>'
 
-    $shows = $('#ajax_content .show_summary')
-    toString = (element) -> element.outerHTML
+    html = body.replace(segueRegExp, segueElement)
 
-    shows = $.map($shows, toString).join "\n"
-
-    fs.writeFile "shows-#{pageNum}.html", shows, 'utf8'
+    jsdom.env html, ["http://code.jquery.com/jquery-1.8.0.min.js"], (errors, window) ->
+      $ = window.$
+      toString = (element) -> element.outerHTML
+      $shows = $('#ajax_content .show_summary')
+      shows = $.map($shows, toString).join "\n"
+      fs.writeFile "setlists/shows-#{pageNum}.html", shows, 'utf8'
 
 getPage page for page in [1..88]
