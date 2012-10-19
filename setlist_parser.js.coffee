@@ -44,7 +44,7 @@ jsdom.jQueryify window, "http://code.jquery.com/jquery-1.8.0.min.js", ->
         match = text.match(/(\d+) (.*)/)
 
         number: match[1]
-        text: match[2]
+        text: match[2].replace(/\s+/g, ' ')
 
       shows.push
         title: cleanTitle($title.text())
