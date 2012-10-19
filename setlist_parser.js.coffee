@@ -15,6 +15,7 @@ jsdom.jQueryify window, "http://code.jquery.com/jquery-1.8.0.min.js", ->
       $title = $show.find('.show_header')
       $date = $title.find('a:first')
       $sets = $show.find('.setlist_partial')
+      $footnotes = $show.find('.setlist_footnote')
 
       getSongs = (element) ->
         $set = $(element)
@@ -36,10 +37,19 @@ jsdom.jQueryify window, "http://code.jquery.com/jquery-1.8.0.min.js", ->
       cleanTitle = (title) ->
         $.trim title.replace(/\s+/g, ' ').replace(' , ', ', ').replace(/•/g, '-')
 
+      buildFootnote = (element) ->
+        $footnote = $(element)
+        text = $.trim($footnote.text()).replace(/\n/g, ' ')
+        match = text.match(/(\d+) (.*)/)
+
+        number: match[1]
+        text: match[2]
+
       shows.push
         title: cleanTitle($title.text())
         phantasyTourId: $date.attr('href').split('/')[-1..][0]
         songs: $.map($sets, getSongs)
+        footnotes: $.map($footnotes, buildFootnote)
 
     json = JSON.stringify shows
 
