@@ -29,6 +29,7 @@ jsdom.jQueryify window, "http://code.jquery.com/jquery-1.8.0.min.js", ->
         name: $song.text()
         segue: $song.next('.segue').length == 1
         set: setName
+        footnotes: $song.next('sup').text().split(/\s/)
 
       getSet = (setName) ->
         match = setName.match(/\d/)
